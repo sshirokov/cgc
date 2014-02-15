@@ -17,6 +17,7 @@ int usage_exit(char *argv0, int status) {
 
 int main(int argc, char **argv) {
 	if(argc < 2) return usage_exit(argv[0], EXIT_FAILURE);
+	char *input = NULL;
 
 	char *arg = argv[1];
 	for(int i = 1; i < argc; arg = argv[++i]) {
@@ -37,7 +38,9 @@ int main(int argc, char **argv) {
 		}
 		else {
 			// Input file
-			debug("Input file '%s'", arg);
+			check(input == NULL, "Input already specified as '%s', cannot specify '%s'", input, arg);
+			input = arg;
+
 		}
 	}
 
