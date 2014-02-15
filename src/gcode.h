@@ -16,7 +16,7 @@ typedef struct s_gcode_parser {
 gparser_t *alloc_gparser(char *path);
 void free_gparser(gparser_t *parser);
 
-void gparser_clear(gparser_t *parser);
 gparser_t *gparser_init(gparser_t *parser, char *path);
+void gparser_clear(gparser_t *parser);
 
 #endif
