@@ -1,9 +1,47 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "dbg.h"
 
-int main(int argc, char **argv) {
-	printf("TODO: Write a \"Compiler for GCode\"\n");
+void usage(char *argv0) {
+	fprintf(stderr, "Usage: %s [options] input\n\n", argv0);
+	fprintf(stderr, "\t-" "h" "\t" "Display help" "\n");
+	fprintf(stderr, "\n");
+}
 
-	return 0;
+int usage_exit(char *argv0, int status) {
+	usage(argv0);
+	exit(status);
+	return status;
+}
+
+int main(int argc, char **argv) {
+	if(argc < 2) return usage_exit(argv[0], EXIT_FAILURE);
+
+	char *arg = argv[1];
+	for(int i = 1; i < argc; arg = argv[++i]) {
+		if((strlen(arg) > 1) && (arg[0] == '-')) {
+			// Potential chain of many options with one '-'
+			for(char o = *(++arg); o != '\0'; o = *(++arg)) {
+				switch(o) {
+				case 'h':
+					usage_exit(argv[0], EXIT_SUCCESS);
+					break;
+				case 'v':
+					log_err("TODO: Implement verbosity");
+					break;
+				default:
+					sentinel("Unknown option '%c'", o);
+				}
+			}
+		}
+		else {
+			// Input file
+			debug("Input file '%s'", arg);
+		}
+	}
+
+	return EXIT_SUCCESS;
+error:
+	return EXIT_FAILURE;
 }
