@@ -38,3 +38,21 @@ char *str_ltrim(char *str, bool copy) {
 error:
 	return NULL;
 }
+
+char *str_rtrim(char *str, bool copy) {
+	if(!copy) {
+		char *end = str + strlen(str) - 1;
+		while((end > str) && isspace(*end)) {
+			*end-- = '\0';
+		}
+		return str;
+	}
+	else {
+		char *copy_str = NULL;
+		check_mem(copy_str = calloc(strlen(str) + 1, sizeof(char)));
+		strncpy(copy_str, str, strlen(str));
+		return str_ltrim(copy_str, false);
+	}
+error:
+	return NULL;
+}

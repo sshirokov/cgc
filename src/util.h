@@ -6,3 +6,4 @@
 char *str_ltrim(char *str, bool copy);
 
 #endif
+char *str_rtrim(char *str, bool copy);

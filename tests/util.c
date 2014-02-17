@@ -90,3 +90,28 @@ void test_util__ltrim_can_noop(void) {
 	cl_assert_(strncmp(no_need_copy, nonstatic, strlen(no_need)) == 0,
 			   "Can't trim what doesn't need trimming.");
 }
+
+void test_util__rtrim_can_trim(void) {
+	char *identity = str_rtrim(need_trim_copy, false);
+	cl_assert_(identity == need_trim_copy,
+			   "str_rtrim() should return identity");
+	cl_assert_(strlen(identity) > 0,
+			   "Result of str_rtrim() should be shorter.");
+	cl_assert_equal_i_(identity[strlen(identity) - 1], 'e',
+					   "The last non-space letter should be 'e'");
+}
+
+void test_util__rtrim_can_noop(void) {
+	nonstatic = str_rtrim(no_need_copy, true);
+	cl_assert(nonstatic != NULL);
+	cl_assert(nonstatic != no_need_copy);
+	cl_assert(strlen(nonstatic) > 0);
+	cl_assert(strlen(nonstatic) == strlen(no_need_copy));
+}
+
+void test_util__rtrim_can_reduce_to_zero_char(void) {
+	nonstatic = str_rtrim(just_spaces_copy, true);
+	cl_assert(nonstatic != NULL);
+	cl_assert(strlen(just_spaces_copy) > 0);
+	cl_assert_equal_i(strlen(nonstatic), 0);
+}
