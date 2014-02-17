@@ -5,6 +5,7 @@
 #include "dbg.h"
 
 #include "gcode.h"
+#include "gcmd.h"
 
 gparser_t *alloc_gparser(char *path) {
 	gparser_t *parser = calloc(1, sizeof(gparser_t));
@@ -116,4 +117,15 @@ error:
 	if(feof(parser->stream)) debug("parser(%p)[%s]:%zd: EOF", parser, parser->path, parser->line);
 	if(ferror(parser->stream)) debug("parser(%p)[%s]:%zd: ERROR. %s", parser, parser->path, parser->line, clean_errno());
 	return NULL;
+}
+
+gcmd_t *gparser_next_cmd(gparser_t *parser) {
+	gcmd_t *cmd = NULL;
+	char *line = NULL;
+
+	while((cmd == NULL) && ((line = gparser_next_line(parser)) != NULL)) {
+		cmd = alloc_gcmd(line, parser->line);
+	}
+
+	return cmd;
 }

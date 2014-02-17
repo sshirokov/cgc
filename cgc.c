@@ -70,6 +70,10 @@ int main(int argc, char **argv) {
 	gparser_t *parser = alloc_gparser(input);
 	check(parser != NULL, "Failed to initialize parser for '%s'", input);
 
+	// TODO: Dev/Debug garbage
+	char *line = gparser_next_line(parser);
+	debug("Read line [%s]", line);
+
 	free_gparser(parser);
 	return EXIT_SUCCESS;
 error:
