@@ -3,7 +3,8 @@
 #ifndef __GCMD_H
 #define __GCMD_H
 
-#define GCMD_NOP '\0'
+#define GCMD_NA '\0'
+#define GCMD_NOP (char)(-1)
 
 typedef struct s_gcode_cmd {
 	size_t line;
@@ -17,5 +18,7 @@ void free_gcmd(gcmd_t *cmd);
 
 gcmd_t *gcmd_init(gcmd_t *cmd, char *raw, size_t line);
 void gcmd_clear(gcmd_t *cmd);
+
+int gcmd_parse(gcmd_t *cmd);
 
 #endif
