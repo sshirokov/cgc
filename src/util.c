@@ -7,6 +7,15 @@
 
 #include "util.h"
 
+char *str_dup(char *str) {
+	char *copy_str = NULL;
+	check_mem(copy_str = calloc(strlen(str) + 1, sizeof(char)));
+	strncpy(copy_str, str, strlen(str));
+	return copy_str;
+error:
+	return NULL;
+}
+
 char *str_ltrim(char *str, bool copy) {
 	if(!copy) {
 		// Find the first non-space char in the string

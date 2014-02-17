@@ -44,6 +44,11 @@ void test_util__cleanup(void) {
 	no_need_copy = NULL;
 }
 
+void test_util__str_dup(void) {
+	nonstatic = str_dup(no_need);
+	cl_assert_equal_i(strncmp(nonstatic, no_need, strlen(no_need)), 0);
+}
+
 void test_util__ltrim_without_copy(void) {
 	size_t before = strlen(need_trim_copy);
 	cl_assert_(str_ltrim(need_trim_copy, false) == need_trim_copy,
