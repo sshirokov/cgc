@@ -30,6 +30,24 @@ error:
 	return NULL;
 }
 
+static int gcmd_store_comment(gcmd_t *cmd) {
+	char *comment = NULL;
+	check(cmd->comment == NULL, "gcmd(%p)'%s':%zd already has comment.", cmd, cmd->path, cmd->line);
+
+	comment = strchr(cmd->raw, '(');
+	comment = comment == NULL ? strchr(cmd->raw, ';') : comment;
+
+	if(comment != NULL) {
+		cmd->comment = str_dup(comment);
+		check_mem(cmd->comment);
+		str_trim(cmd->comment, false);
+	}
+
+	return 0;
+error:
+	return -1;
+}
+
 static int gcmd_parse_filtered(gcmd_t *cmd, char *filtered) {
 	// TODO: MORE
 	cmd->op = filtered[0];
@@ -93,6 +111,10 @@ void gcmd_clear(gcmd_t *cmd) {
 		free(cmd->raw);
 		cmd->raw = NULL;
 	}
+	if(cmd->comment != NULL) {
+		free(cmd->comment);
+		cmd->comment = NULL;
+	}
 }
 
 int gcmd_parse(gcmd_t *cmd) {
@@ -102,6 +124,7 @@ int gcmd_parse(gcmd_t *cmd) {
 	int rc = -1;
 	char *filtered = NULL;
 	check_mem(filtered = gcmd_filtered_raw(cmd));
+	check(gcmd_store_comment(cmd) == 0, "Error storing comment for command '%s':%zd", cmd->path, cmd->line);
 
 	// Only parse comands that filter to something actionable
 	// The rest can return as NOOPs

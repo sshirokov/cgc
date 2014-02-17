@@ -12,6 +12,7 @@ typedef struct s_gcode_cmd {
 	size_t line;
 	char *raw;
 
+	char *comment;
 	char op;
 } gcmd_t;
 
