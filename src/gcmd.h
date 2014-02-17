@@ -13,7 +13,9 @@ typedef struct s_gcode_cmd {
 	char *raw;
 
 	char *comment;
+
 	char op;
+	int arg;
 } gcmd_t;
 
 gcmd_t *alloc_gcmd(char *path, char *raw, size_t line);

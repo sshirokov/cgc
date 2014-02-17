@@ -1,6 +1,10 @@
+#include <assert.h>
+#include <ctype.h>
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include <math.h>
 
 #include "dbg.h"
 
@@ -49,10 +53,25 @@ error:
 }
 
 static int gcmd_parse_filtered(gcmd_t *cmd, char *filtered) {
-	cmd->op = filtered[0];
+	// Very small sanity checks.
+	check(strlen(filtered) >= 2, "Command '%s' too short to be correct.", filtered);
+	check(isdigit(filtered[1]), "Command invalid: invalid digit following opcode");
 
-	sentinel("TODO: Store the args to the op (e.g. G71 => .op = 'G', .arg = 71)");
-	sentinel("TODO: Parse the rest of the args into K=V pairs and store them in cmd");
+	// Store the op and the arg
+	cmd->op = toupper(filtered[0]);
+	cmd->arg = atoi(filtered + 1);
+
+	// floor(log10(X)) + 1 is the number of digits in X
+	// All the opcode args are positive, so we don't have to worry about < 0
+	// So, args starts at the offset of the length of the opcode (1) and the length
+	// of the number following it.
+	char *args = filtered + ((int)floorf(log10f(cmd->arg)) + 1) + 1;
+
+	// Then we increment *args until we no longer land on whitespace, so don't have to
+	// deal with making a trimmed copy
+	while((*args != '\0') && isspace(*args)) args++;
+
+	sentinel("TODO: cmd parse args of: %c:%d(%s)", cmd->op, cmd->arg, args);
 
 	return 0;
 error:
