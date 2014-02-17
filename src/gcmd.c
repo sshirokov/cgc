@@ -65,7 +65,7 @@ static int gcmd_parse_filtered(gcmd_t *cmd, char *filtered) {
 	// All the opcode args are positive, so we don't have to worry about < 0
 	// So, args starts at the offset of the length of the opcode (1) and the length
 	// of the number following it.
-	char *args = filtered + ((int)floorf(log10f(cmd->arg)) + 1) + 1;
+	char *args = filtered + 1 + ((int)floorf(log10f(cmd->arg)) + 1);
 
 	// Then we increment *args until we no longer land on whitespace, so don't have to
 	// deal with making a trimmed copy
