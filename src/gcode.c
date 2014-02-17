@@ -124,8 +124,20 @@ gcmd_t *gparser_next_cmd(gparser_t *parser) {
 	char *line = NULL;
 
 	while((cmd == NULL) && ((line = gparser_next_line(parser)) != NULL)) {
-		cmd = alloc_gcmd(line, parser->line);
+		cmd = alloc_gcmd(parser->path, line, parser->line);
+		check(cmd != NULL, "Failed to parse line '%s':%zd", parser->path, parser->line);
+		free(line);
+
+		// Don't return NOOPs, wait until we have a command
+		if(gcmd_is_noop(cmd)) {
+			free_gcmd(cmd);
+			cmd = NULL;
+		}
 	}
 
 	return cmd;
+error:
+	if(line != NULL) free(line);
+	if(cmd != NULL) free_gcmd(cmd);
+	return NULL;
 }
