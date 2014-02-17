@@ -79,7 +79,7 @@ int main(int argc, char **argv) {
 	for(int i = 0; i < 10; i++) {
 		cmd = gparser_next_cmd(parser);
 		check_debug(cmd != NULL, "No CMD");
-		debug("CMD(%p): %zd '%c'(%d)", parser, parser->line, cmd->op, cmd->op);
+		debug("CMD(%p): %zd '%c'(%d): Comment: '%s'", parser, parser->line, cmd->op, cmd->op, cmd->comment);
 		free_gcmd(cmd);
 	}
 
