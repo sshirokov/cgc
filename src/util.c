@@ -63,3 +63,16 @@ char *str_rtrim(char *str, bool copy) {
 error:
 	return NULL;
 }
+
+char *str_trim(char *str, bool copy) {
+	char *trim_str = copy ? str_dup(str) : str;
+	check_mem(trim_str);
+
+	// Since we have already made a copy if we need one,
+	// we can just chain these two together, since non-copy
+	// operations can't throw out a NULL and the pointer itself
+	// cannot change.
+	return str_ltrim(str_rtrim(trim_str, false), false);
+error:
+	return NULL;
+}

@@ -120,3 +120,13 @@ void test_util__rtrim_can_reduce_to_zero_char(void) {
 	cl_assert(strlen(just_spaces_copy) > 0);
 	cl_assert_equal_i(strlen(nonstatic), 0);
 }
+
+void test_util__trim_can_trim_at_both_ends(void) {
+	nonstatic = str_trim(need_trim_copy, true);
+	cl_assert(nonstatic != need_trim_copy);
+	cl_assert(strlen(nonstatic) > 0);
+	cl_assert(strlen(nonstatic) < strlen(need_trim_copy));
+	cl_assert(!isspace(nonstatic[0]) && !isspace(nonstatic[strlen(nonstatic) - 1]));
+	cl_assert(nonstatic[0] == 't');
+	cl_assert(nonstatic[strlen(nonstatic) - 1] == 'e');
+}
