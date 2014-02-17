@@ -69,3 +69,51 @@ error:
 	if(parser != NULL) gparser_clear(parser);
 	return NULL;
 }
+
+char *gparser_next_line(gparser_t *parser) {
+	char read_buffer[512] = {0};
+	char *line = NULL;
+	char *rc = NULL;
+
+	// Sanity check the stream before we go on,
+	check_debug(feof(parser->stream) == 0, "parser(%p)[%s]:%zd is at EOF", parser, parser->path, parser->line);
+	check(ferror(parser->stream) == 0, "Error in parser(%p)[%s]:%zd stream.", parser, parser->path, parser->line);
+
+	// Advance the line first
+	parser->line++;
+
+	// Try reading, with the hope that we get the entire line at once
+	rc = fgets(read_buffer, sizeof(read_buffer), parser->stream);
+	check(rc != NULL, "Failed to read line from '%s':%zd", parser->path, parser->line);
+	check_mem(line = calloc(strlen(read_buffer) + 1, sizeof(char)));
+	strncpy(line, read_buffer, strlen(read_buffer));
+
+	// See if we need to finish reading the line
+	while(line[strlen(line) - 1] != '\n') {
+		rc = fgets(read_buffer, sizeof(read_buffer), parser->stream);
+		if((rc == NULL) && feof(parser->stream)) {
+			// We got everything that we can get, so we'll
+			// call it a "line"
+			break;
+		}
+		else {
+			// Append the new data to the end of the line
+			char *new_line = NULL;
+			check(rc != NULL, "Error finishing line %s:%zd", parser->path, parser->line);
+			check_mem(new_line = calloc(strlen(line) + strlen(read_buffer) + 1, sizeof(char)));
+
+			strncpy(new_line, line, strlen(line));
+			strncpy(new_line + strlen(new_line), read_buffer, strlen(read_buffer));
+
+			free(line);
+			line = new_line;
+		}
+	}
+
+	return line;
+error:
+	if(line != NULL) free(line);
+	if(feof(parser->stream)) debug("parser(%p)[%s]:%zd: EOF", parser, parser->path, parser->line);
+	if(ferror(parser->stream)) debug("parser(%p)[%s]:%zd: ERROR. %s", parser, parser->path, parser->line, clean_errno());
+	return NULL;
+}
