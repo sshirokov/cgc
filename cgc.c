@@ -70,9 +70,18 @@ int main(int argc, char **argv) {
 	gparser_t *parser = alloc_gparser(input);
 	check(parser != NULL, "Failed to initialize parser for '%s'", input);
 
-	// TODO: Dev/Debug garbage
-	char *line = gparser_next_line(parser);
-	debug("Read line [%s]", line);
+	// TODO: Something real.
+	//       Dev/Debug garbage
+	//       Right now, we print the first 10 commands from the
+	//       supplied G-Code file.
+	gcmd_t *cmd = NULL;
+
+	for(int i = 0; i < 10; i++) {
+		cmd = gparser_next_cmd(parser);
+		check_debug(cmd != NULL, "No CMD");
+		debug("CMD(%p): %zd '%c'(%d)", parser, parser->line, cmd->op, cmd->op);
+		free_gcmd(cmd);
+	}
 
 	free_gparser(parser);
 	return EXIT_SUCCESS;
