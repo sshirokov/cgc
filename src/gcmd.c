@@ -49,11 +49,13 @@ error:
 }
 
 static int gcmd_parse_filtered(gcmd_t *cmd, char *filtered) {
-	// TODO: MORE
 	cmd->op = filtered[0];
 
+	sentinel("TODO: Store the args to the op (e.g. G71 => .op = 'G', .arg = 71)");
+	sentinel("TODO: Parse the rest of the args into K=V pairs and store them in cmd");
+
 	return 0;
-//error:
+error:
 	return -1;
 }
 
