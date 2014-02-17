@@ -4,6 +4,7 @@
 
 #include "dbg.h"
 
+#include "config.h"
 #include "gcode.h"
 
 void usage(char *argv0) {
@@ -46,7 +47,9 @@ int main(int argc, char **argv) {
 					usage_exit(argv[0], EXIT_SUCCESS);
 					break;
 				case 'v':
-					log_err("TODO: Implement verbosity");
+					if(Config.verbose++ >= 2) {
+						log_info("Verbosity increased to %d", Config.verbose);
+					}
 					break;
 				default:
 					usage_fail(argv[0], "Unknown option '%c'", o);
